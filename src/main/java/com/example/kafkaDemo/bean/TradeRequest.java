@@ -1,22 +1,21 @@
 package com.example.kafkaDemo.bean;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "user1")
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class User {
+@AllArgsConstructor
+public class TradeRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
-
+    @OneToOne
+    private User user;
+    private Status status;
 }

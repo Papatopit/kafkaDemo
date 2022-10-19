@@ -1,7 +1,11 @@
 package com.example.kafkaDemo.service;
 
+import com.example.kafkaDemo.bean.Status;
 import com.example.kafkaDemo.bean.Trade;
+import com.example.kafkaDemo.bean.TradeRequest;
+import com.example.kafkaDemo.bean.User;
 import com.example.kafkaDemo.repo.TradeCrudRepo;
+import com.example.kafkaDemo.repo.UserCrudRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +25,14 @@ public class TradeService {
     private String topicName;
 
     @Autowired
-    private KafkaTemplate<String,String> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public Trade createTrade(Trade trade){
+
+    public Trade createTrade(Trade trade) {
         trade = tradeCrudRepo.save(trade);
-        trade.setStatus("CREATED");
+        trade.setStatus(Status.IN_PROCESSING);
         String message = null;
         try {
             message = objectMapper.writeValueAsString(trade);
@@ -37,10 +42,14 @@ public class TradeService {
         kafkaTemplate.send(topicName, message);
         return trade;
     }
-    public List<Trade> getAllTrades(){
+
+    public List<Trade> getAllTrades() {
         List<Trade> trades = (List<Trade>) tradeCrudRepo.findAll();
         return trades;
 
     }
+
+
+
 
 }
